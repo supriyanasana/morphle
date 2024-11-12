@@ -1,30 +1,21 @@
 from flask import Flask
-import os
-from datetime import datetime
-import pytz
 import subprocess
+import datetime
+import pytz
 
 app = Flask(__name__)
 
 @app.route('/htop')
 def htop():
-    name = "Supriya Nasana"
-    username = os.getlogin()
-    server_time = datetime.now(pytz.timezone('Asia/Kolkata')).strftime('%Y-%m-%d %H:%M:%S IST')
+    username = subprocess.getoutput('whoami')
+    ist = pytz.timezone('Asia/Kolkata')
+    ist_time = datetime.datetime.now(ist).strftime('%Y-%m-%d %H:%M:%S.%f')
     top_output = subprocess.getoutput('top -b -n 1')
-    
-    return f"""
-    <html>
-        <body>
-            <h1>System Information</h1>
-            <p><strong>Name:</strong> {name}</p>
-            <p><strong>Username:</strong> {username}</p>
-            <p><strong>Server Time:</strong> {server_time}</p>
-            <h2>Top Output</h2>
-            <pre>{top_output}</pre>
-        </body>
-    </html>
-    """
-
+    response = f"""Name: Supriya_nasana
+user: {username}
+Server Time (IST): {ist_time}
+TOP output:
+{top_output}"""
+    return response, 200, {'Content-Type': 'text/plain'}
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000)
+    app.run(host='0.0.0.0', port=3000)
